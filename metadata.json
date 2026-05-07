@@ -1,0 +1,6 @@
+{
+  "name": "Purchase Approval Form Generator",
+  "description": "A web application to generate Bahria University Purchase Approval Forms as PDFs based on product details.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
