@@ -1,0 +1,39 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    // Suggestions collection
+    match /suggestions/{suggestionId} {
+      allow read: if true; // Allow reading suggestions even if not signed in for convenience, or restrict to isSignedIn()
+      allow create, update: if isValidId(suggestionId) 
+        && incoming().type in ['product', 'justification']
+        && incoming().value is string && incoming().value.size() <= 500
+        && incoming().lastUsed == request.time;
+    }
+
+    // History collection
+    match /history/{formId} {
+      allow read: if true; // Restrict as needed
+      allow create: if isValidId(formId)
+        && incoming().createdAt == request.time;
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "entities": {
+    "suggestion": {
+      "title": "Suggestion",
+      "description": "Stores unique product names or justifications for autocomplete suggestions",
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["product", "justification"] },
+        "value": { "type": "string" },
+        "lastUsed": { "type": "string", "format": "date-time" }
+      },
+      "required": ["type", "value", "lastUsed"]
+    },
+    "history": {
+      "title": "History",
+      "description": "Stores generated form records",
+      "type": "object",
+      "properties": {
+        "formData": { "type": "object" },
+        "items": { "type": "array" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["formData", "items", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/suggestions/{suggestionId}": {
+      "schema": "suggestion",
+      "description": "Collection for historical data suggestions"
+    },
+    "/history/{formId}": {
+      "schema": "history",
+      "description": "Collection for form generation history"
+    }
+  }
+}
