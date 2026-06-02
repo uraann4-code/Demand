@@ -30,8 +30,9 @@ export const generatePurchaseFormPDF = (formData: FormData, items: PurchaseItem[
     doc.text('I', pageWidth / 2, 40, { align: 'center' });
     
     doc.setFont('helvetica', 'normal');
-    doc.text('It is requested that an amount of Rs. ________________ may please be sanctioned to purchase following', margin, 50);
-    doc.text('items for official use. Justification of each item is mentioned against each:', margin, 58);
+    const requestText = 'It is requested that an amount of Rs. ________________ may please be sanctioned to purchase following items for official use. Justification of each item is mentioned against each:';
+    const splitRequestText = doc.splitTextToSize(requestText, pageWidth - (margin * 2));
+    doc.text(splitRequestText, margin, 50);
 
     // Table
     const tableData = items.map(item => [
@@ -78,7 +79,8 @@ export const generatePurchaseFormPDF = (formData: FormData, items: PurchaseItem[
     doc.setFont('helvetica', 'bold');
     doc.text('Demand Raised by: ', margin, finalY);
     doc.setFont('helvetica', 'normal');
-    doc.text(formData.raisedBy || 'Samina khan', margin + 35, finalY);
+    // Added a space and slightly increased offset for better spacing
+    doc.text('  ' + (formData.raisedBy || 'Samina khan'), margin + 36, finalY);
     
     doc.setFont('helvetica', 'bold');
     doc.text('Head of Department: ', pageWidth - margin - 60, finalY);
