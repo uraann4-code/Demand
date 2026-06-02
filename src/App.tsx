@@ -108,7 +108,8 @@ export default function App() {
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     dated: new Date().toISOString().split('T')[0],
-    approverTitle: 'DIRECTOR CAMPUS'
+    approverTitle: 'DIRECTOR CAMPUS',
+    raisedBy: 'Samina khan'
   });
 
   const [items, setItems] = useState<PurchaseItem[]>([
@@ -255,7 +256,14 @@ export default function App() {
             </div>
             <div>
               <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest text-left">Demand Raised By</p>
-              <p className="text-lg font-black text-blue-950 font-serif italic tracking-wide text-left">Samina khan</p>
+              <input
+                type="text"
+                name="raisedBy"
+                value={formData.raisedBy}
+                onChange={handleFormDataChange}
+                placeholder="Enter name"
+                className="text-lg font-black text-blue-950 font-serif italic tracking-wide text-left bg-transparent outline-none w-full border-b border-transparent focus:border-blue-200"
+              />
             </div>
           </motion.div>
 

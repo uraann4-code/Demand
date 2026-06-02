@@ -8,5 +8,6 @@ export interface PurchaseItem {
 
 export interface FormData {
   dated: string;
-  approverTitle: string; // e.g., DIRECTOR CAMPUS, DIRECTOR ADMIN
+  approverTitle: string; 
+  raisedBy?: string;
 }

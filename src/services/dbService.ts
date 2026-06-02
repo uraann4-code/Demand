@@ -72,21 +72,34 @@ export const saveFormAndIndexItems = async (formData: FormData, items: PurchaseI
     // 2. Index Products and Justifications (Batch)
     const batch = writeBatch(db);
     
+    // Helper for safe Unicode Base64
+    const toBase64Safe = (str: string) => {
+      try {
+        return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) => {
+          return String.fromCharCode(parseInt(p1, 16));
+        })).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+      } catch (e) {
+        return Math.random().toString(36).substring(7);
+      }
+    };
+
     items.forEach(item => {
-      if (item.description) {
-        const prodId = `prod_${btoa(item.description.trim()).replace(/=/g, '')}`;
+      if (item.description && item.description.trim().length > 1) {
+        const val = item.description.trim();
+        const prodId = `prod_${toBase64Safe(val).slice(0, 100)}`; // Max ID length safety
         batch.set(doc(db, suggestionsPath, prodId), {
           type: 'product',
-          value: item.description.trim(),
+          value: val,
           lastUsed: serverTimestamp()
         }, { merge: true });
       }
       
-      if (item.justification) {
-        const justId = `just_${btoa(item.justification.trim()).replace(/=/g, '')}`;
+      if (item.justification && item.justification.trim().length > 1) {
+        const val = item.justification.trim();
+        const justId = `just_${toBase64Safe(val).slice(0, 100)}`;
         batch.set(doc(db, suggestionsPath, justId), {
           type: 'justification',
-          value: item.justification.trim(),
+          value: val,
           lastUsed: serverTimestamp()
         }, { merge: true });
       }
